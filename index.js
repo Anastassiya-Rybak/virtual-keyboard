@@ -1,3 +1,4 @@
+
 const codes = {
   0: "`",
   1: "1",
@@ -65,31 +66,34 @@ const codes = {
   63: "ArrowRight"
 };
 
+const root = document.createElement("div");
+root.id = "root-container";
+document.querySelector("body").prepend(root);
 
-const root = document.createElement('div');
-root.id = 'root-container';
-document.querySelector('body').prepend(root);
-
-let textAria = document.createElement('div');
-textAria.className = 'textaria';
+let textAria = document.createElement("div");
+textAria.className = "textaria";
 root.append(textAria);
 
-let textAriaContent = document.createElement('p');
+let textAriaContent = document.createElement("textarea");
+textAriaContent.setAttribute("rows", "11");
+textAriaContent.setAttribute("cols", "65");
+textAriaContent.setAttribute("placeholder", "Ну что ж, надеюсь все пройдёт без багов. . .")
 textAria.append(textAriaContent);
 
-let keyBoard = document.createElement('div');
-keyBoard.className = 'keyboard';
+const keyBoard = document.createElement("div");
+keyBoard.className = "keyboard";
 root.append(keyBoard);
 
-let keyBoardLine = document.createElement('div');
-keyBoardLine.className = 'keyboard__line';
+let keyBoardLine = document.createElement("div");
+keyBoardLine.className = "keyboard__line";
 keyBoard.append(keyBoardLine);
 keyBoard.append(keyBoardLine.cloneNode(true), keyBoardLine.cloneNode(true), keyBoardLine.cloneNode(true), keyBoardLine.cloneNode(true));
 
 
 function createKey (key, selector, container) {
-  let keyElement = document.createElement('button');
+  let keyElement = document.createElement("button");
   keyElement.className = selector;
+  keyElement.setAttribute("tabindex", -1);
   if (key != "ArrowUp" && key != "ArrowLeft" && key != "ArrowDown" && key != "ArrowRight" && key != "Control" && key != "Meta" && key != "Delete"){
     keyElement.innerText = key;
   } else {
@@ -107,13 +111,13 @@ function createKey (key, selector, container) {
         keyElement.innerHTML = '<img src="./icons/arrow.png" alt="">';
         break;
       case "Control":
-        keyElement.innerHTML = 'Ctrl';
+        keyElement.innerHTML = "Ctrl";
         break;
       case "Meta":
-        keyElement.innerHTML = 'Win';
+        keyElement.innerHTML = "Win";
         break;
       case "Delete":
-        keyElement.innerHTML = 'Del';
+        keyElement.innerHTML = "Del";
         break;                
     }
   }
@@ -124,22 +128,99 @@ function addKeyboard (obj) {
   function cirlc(start ,iterNum, line){
     for(let i = start; i < iterNum; i++) {
       if (obj[i].length == 1 && obj[i] != " " && obj[i] != "`") {
-        createKey(obj[i].toLowerCase() , 'keyboard__item_light', keyBoard.children[line]);
+        createKey(obj[i].toLowerCase() , "keyboard__item_light", keyBoard.children[line]);
       }else if (obj[i] != " "){
-        createKey(obj[i], 'keyboard__item_dark', keyBoard.children[line]);
+        createKey(obj[i], "keyboard__item_dark", keyBoard.children[line]);
       }else{
-        createKey(obj[i], 'keyboard__item_light keyboard__item_space', keyBoard.children[line])
+        createKey(obj[i], "keyboard__item_light keyboard__item_space", keyBoard.children[line]);
       }
     }
-  };
+  }
   cirlc(0, 14, 0);
   cirlc(14, 29, 1);
   cirlc(29, 42, 2);
   cirlc(42, 55, 3);
   cirlc(55, 64, 4);
 
-  keyBoard.children[3].firstElementChild.classList.add('keyboard__item_shift');
-  keyBoard.children[1].firstElementChild.classList.add('keyboard__item_shift');
+  keyBoard.children[3].firstElementChild.classList.add("keyboard__item_shift");
+  keyBoard.children[1].firstElementChild.classList.add("keyboard__item_shift");
 }
 
 addKeyboard(codes);
+
+textAriaContent.focus();
+
+const writeSimbol = (event) => {
+  event.preventDefault();
+
+  if (event.target.tagName !== "BUTTON"){return;}
+
+  if (event.target.innerText === "Backspace"){
+    let cursorPosition = textAriaContent.selectionStart;
+    let valueBeforeCursor = textAriaContent.value.substring(0, cursorPosition - 1);
+    let valueAfterCursor = textAriaContent.value.substring(cursorPosition);
+    
+    textAriaContent.value = valueBeforeCursor + valueAfterCursor;
+
+    textAriaContent.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+      return
+  }
+    // } else if (event.target.innerText === "Del") {
+    //   if (textAriaContent.selectionStart != 0){
+    //     textAriaContent.innerHTML = textAriaContent.innerHTML.replace(textAriaContent.innerHTML[currentCursor], "");
+    //     currentCursor = textAriaContent.selectionStart - 1;
+    //   }
+    // } else 
+  else if (event.target.classList.contains("keyboard__item_space")) {
+    textAriaContent.value += " ";
+  } else {
+    textAriaContent.value += event.target.innerText;
+  }
+};
+
+textAriaContent.addEventListener('mousedown', function(event) { //разрешаю фокусировку только в области текстового поля, чтобы фокус не уходил на кнопки, а оставался на поле.
+  if (!event.target.closest('.textaria')) {
+    event.preventDefault();
+  }
+});
+
+window.addEventListener("keydown", (event) => {   //сбрасываю действия по умолчанию, чтобы не слетал фокус
+  if(event.code == "Tab") event.preventDefault();
+})
+
+keyBoard.addEventListener("mousedown", writeSimbol, false);
+
+const conaction = (e) => {
+  const getIter = (lineNum) => {
+    for (let i = 0; i < keyBoard.children[lineNum].children.length; i++) {
+      if ("Key" + keyBoard.children[lineNum].children[i].textContent.toUpperCase() == e.code ||
+      "Digit" + keyBoard.children[lineNum].children[i].textContent == e.code ||
+      keyBoard.children[lineNum].children[i].textContent == e.code) {
+        if(keyBoard.children[lineNum].children[i].textContent.length > 1){
+          keyBoard.children[lineNum].children[i].classList.add('keyboard__item_tap-d');
+          window.onkeyup = function() { keyBoard.children[lineNum].children[i].classList.remove('keyboard__item_tap-d');}
+        } else {
+          keyBoard.children[lineNum].children[i].classList.add('keyboard__item_tap-l');
+          window.onkeyup = function() { keyBoard.children[lineNum].children[i].classList.remove('keyboard__item_tap-l');}
+        }
+      }else if (keyBoard.children[lineNum].children[i].textContent == e.key){
+        if(e.key == "`"){
+          keyBoard.children[lineNum].children[i].classList.add('keyboard__item_tap-d');
+          window.onkeyup = function() { keyBoard.children[lineNum].children[i].classList.remove('keyboard__item_tap-d');}
+        } else {
+          keyBoard.children[lineNum].children[i].classList.add('keyboard__item_tap-l');
+          window.onkeyup = function() { keyBoard.children[lineNum].children[i].classList.remove('keyboard__item_tap-l');}
+        }
+      }
+    }
+  }
+  getIter(0);
+  getIter(1);
+  getIter(2);
+  getIter(3);
+  getIter(4);
+}
+
+window.onkeydown = (e)=>{console.log(e);}
+
+window.addEventListener("keydown", conaction, false)
