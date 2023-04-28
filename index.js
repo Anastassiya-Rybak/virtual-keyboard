@@ -99,15 +99,19 @@ function createKey (key, selector, container) {
   } else {
     switch (key) {
       case "ArrowUp":
+        keyElement.classList.add('up');
         keyElement.innerHTML = '<img src="./icons/arrow.png" alt="" style="transform: rotate(-0.25turn)">';
         break;
       case "ArrowLeft":
+        keyElement.classList.add('left');
         keyElement.innerHTML = '<img src="./icons/arrow.png" alt="" style="transform: rotate(180deg)">';
         break;
       case "ArrowDown":
+        keyElement.classList.add('down');
         keyElement.innerHTML = '<img src="./icons/arrow.png" alt="" style="transform: rotate(90deg)">';
         break;
       case "ArrowRight":
+        keyElement.classList.add('right');
         keyElement.innerHTML = '<img src="./icons/arrow.png" alt="">';
         break;
       case "Control":
@@ -153,7 +157,42 @@ textAriaContent.focus();
 const writeSimbol = (event) => {
   event.preventDefault();
 
-  if (event.target.tagName !== "BUTTON"){return;}
+  if (!event.target.closest('button') || event.target.innerText == 'Shift' || event.target.innerText == 'Ctrl' || event.target.innerText == 'Win' || event.target.innerText == 'Alt'){return;}
+
+  if (event.target.innerText == 'CapsLock'){ 
+    keyBoard.classList.toggle('keyboard_uppercase');
+    const getIter = (lineNum, size) => {
+      if (size == 'up'){
+        keyBoard.children[2].children[0].classList.add('keyboard__item_uppercase')
+        for (let i = 0; i < keyBoard.children[lineNum].children.length; i++) {
+          if (keyBoard.children[lineNum].children[i].innerText.length == 1){
+            keyBoard.children[lineNum].children[i].innerText = keyBoard.children[lineNum].children[i].innerText.toUpperCase();
+          }
+        }
+      } else {
+        keyBoard.children[2].children[0].classList.remove('keyboard__item_uppercase')
+        for (let i = 0; i < keyBoard.children[lineNum].children.length; i++) {
+          if (keyBoard.children[lineNum].children[i].innerText.length == 1){
+            keyBoard.children[lineNum].children[i].innerText = keyBoard.children[lineNum].children[i].innerText.toLowerCase();
+          }
+        }
+      }
+    }
+    if (keyBoard.classList.contains('keyboard_uppercase')){
+      getIter(0, 'up');
+      getIter(1, 'up');
+      getIter(2, 'up');
+      getIter(3, 'up');
+      getIter(4, 'up');
+    } else {
+      getIter(0, 'down');
+      getIter(1, 'down');
+      getIter(2, 'down');
+      getIter(3, 'down');
+      getIter(4, 'down');
+    }
+    return
+  }
 
   if (event.target.innerText === "Backspace"){
     let cursorPosition = textAriaContent.selectionStart;
@@ -163,20 +202,58 @@ const writeSimbol = (event) => {
     textAriaContent.value = valueBeforeCursor + valueAfterCursor;
 
     textAriaContent.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
-      return
-  }
-    // } else if (event.target.innerText === "Del") {
-    //   if (textAriaContent.selectionStart != 0){
-    //     textAriaContent.innerHTML = textAriaContent.innerHTML.replace(textAriaContent.innerHTML[currentCursor], "");
-    //     currentCursor = textAriaContent.selectionStart - 1;
-    //   }
-    // } else 
-  else if (event.target.classList.contains("keyboard__item_space")) {
-    textAriaContent.value += " ";
+  } else if (event.target.innerText === "Del") {
+    let cursorPosition = textAriaContent.selectionStart;
+    let valueBeforeCursor = textAriaContent.value.substring(0, cursorPosition);
+    let valueAfterCursor = textAriaContent.value.substring(cursorPosition+1);
+    
+    textAriaContent.value = valueBeforeCursor + valueAfterCursor;
+
+    textAriaContent.setSelectionRange(cursorPosition, cursorPosition);
+  } else if (event.target.innerText === "Enter"){
+    let cursorPosition = textAriaContent.selectionStart;
+    let valueBeforeCursor = textAriaContent.value.substring(0, cursorPosition);
+    let valueAfterCursor = textAriaContent.value.substring(cursorPosition);
+    
+    textAriaContent.value = valueBeforeCursor + "\n" + valueAfterCursor;
+
+    textAriaContent.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
+  } else if (event.target.innerText === "Tab"){
+    let cursorPosition = textAriaContent.selectionStart;
+    let valueBeforeCursor = textAriaContent.value.substring(0, cursorPosition);
+    let valueAfterCursor = textAriaContent.value.substring(cursorPosition);
+    
+    textAriaContent.value = valueBeforeCursor + "  " + valueAfterCursor;
+
+    textAriaContent.setSelectionRange(cursorPosition + 2, cursorPosition + 2);
+  } else if (event.target.classList.contains('up') || event.target.closest('.up')) {
+    textAriaContent.value += "▲";
+  } else if (event.target.classList.contains('right') || event.target.closest('.right')) {
+    textAriaContent.value += "►";
+  } else if (event.target.classList.contains('down') || event.target.closest('.down')) {
+    textAriaContent.value += "▼";
+  } else if (event.target.classList.contains('left') || event.target.closest('.left')) {
+    textAriaContent.value += "◄";
+  } else if (event.target.classList.contains("keyboard__item_space")) {
+    let cursorPosition = textAriaContent.selectionStart;
+    let valueBeforeCursor = textAriaContent.value.substring(0, cursorPosition);
+    let valueAfterCursor = textAriaContent.value.substring(cursorPosition);
+    
+    textAriaContent.value = valueBeforeCursor + " " + valueAfterCursor;
+
+    textAriaContent.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
   } else {
-    textAriaContent.value += event.target.innerText;
+    let cursorPosition = textAriaContent.selectionStart;
+    let valueBeforeCursor = textAriaContent.value.substring(0, cursorPosition);
+    let valueAfterCursor = textAriaContent.value.substring(cursorPosition);
+    
+    textAriaContent.value = valueBeforeCursor + event.target.innerText + valueAfterCursor;
+
+    textAriaContent.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
   }
 };
+
+
 
 textAriaContent.addEventListener('mousedown', function(event) { //разрешаю фокусировку только в области текстового поля, чтобы фокус не уходил на кнопки, а оставался на поле.
   if (!event.target.closest('.textaria')) {
@@ -185,7 +262,10 @@ textAriaContent.addEventListener('mousedown', function(event) { //разреша
 });
 
 window.addEventListener("keydown", (event) => {   //сбрасываю действия по умолчанию, чтобы не слетал фокус
-  if(event.code == "Tab") event.preventDefault();
+  if(event.code == "Tab") {
+    event.preventDefault();
+    textAriaContent.value += "  ";
+  }
 })
 
 keyBoard.addEventListener("mousedown", writeSimbol, false);
@@ -197,19 +277,48 @@ const conaction = (e) => {
       "Digit" + keyBoard.children[lineNum].children[i].textContent == e.code ||
       keyBoard.children[lineNum].children[i].textContent == e.code) {
         if(keyBoard.children[lineNum].children[i].textContent.length > 1){
+          if (e.key == "CapsLock"){
+            keyBoard.classList.toggle('keyboard_uppercase');
+            const getIter = (lineNum, size) => {
+              if (size == 'up'){
+                keyBoard.children[2].children[0].classList.add('keyboard__item_uppercase')
+                for (let i = 0; i < keyBoard.children[lineNum].children.length; i++) {
+                  if (keyBoard.children[lineNum].children[i].innerText.length == 1){
+                    keyBoard.children[lineNum].children[i].innerText = keyBoard.children[lineNum].children[i].innerText.toUpperCase();
+                  }
+                }
+              } else {
+                keyBoard.children[2].children[0].classList.remove('keyboard__item_uppercase')
+                for (let i = 0; i < keyBoard.children[lineNum].children.length; i++) {
+                  if (keyBoard.children[lineNum].children[i].innerText.length == 1){
+                    keyBoard.children[lineNum].children[i].innerText = keyBoard.children[lineNum].children[i].innerText.toLowerCase();
+                  }
+                }
+              }
+            }
+            if (keyBoard.classList.contains('keyboard_uppercase')){
+              getIter(0, 'up');
+              getIter(1, 'up');
+              getIter(2, 'up');
+              getIter(3, 'up');
+              getIter(4, 'up');
+            } else {
+              getIter(0, 'down');
+              getIter(1, 'down');
+              getIter(2, 'down');
+              getIter(3, 'down');
+              getIter(4, 'down');
+            }
+          }
           keyBoard.children[lineNum].children[i].classList.add('keyboard__item_tap-d');
-          window.onkeyup = function() { keyBoard.children[lineNum].children[i].classList.remove('keyboard__item_tap-d');}
         } else {
           keyBoard.children[lineNum].children[i].classList.add('keyboard__item_tap-l');
-          window.onkeyup = function() { keyBoard.children[lineNum].children[i].classList.remove('keyboard__item_tap-l');}
         }
-      }else if (keyBoard.children[lineNum].children[i].textContent == e.key){
+      } else if (keyBoard.children[lineNum].children[i].textContent == e.key){
         if(e.key == "`"){
           keyBoard.children[lineNum].children[i].classList.add('keyboard__item_tap-d');
-          window.onkeyup = function() { keyBoard.children[lineNum].children[i].classList.remove('keyboard__item_tap-d');}
         } else {
           keyBoard.children[lineNum].children[i].classList.add('keyboard__item_tap-l');
-          window.onkeyup = function() { keyBoard.children[lineNum].children[i].classList.remove('keyboard__item_tap-l');}
         }
       }
     }
@@ -221,6 +330,31 @@ const conaction = (e) => {
   getIter(4);
 }
 
-window.onkeydown = (e)=>{console.log(e);}
+window.addEventListener('keyup', (event) => {
+  const getIter = (lineNum) => {
+    for (let i = 0; i < keyBoard.children[lineNum].children.length; i++) {
+      if ("Key" + keyBoard.children[lineNum].children[i].textContent.toUpperCase() == event.code ||
+      "Digit" + keyBoard.children[lineNum].children[i].textContent == event.code ||
+      keyBoard.children[lineNum].children[i].textContent == event.code) {
+        if(keyBoard.children[lineNum].children[i].textContent.length > 1){
+          keyBoard.children[lineNum].children[i].classList.remove('keyboard__item_tap-d');
+        } else {
+          keyBoard.children[lineNum].children[i].classList.remove('keyboard__item_tap-l');
+        }
+      }else if (keyBoard.children[lineNum].children[i].textContent == event.key){
+        if(event.key == "`"){
+          keyBoard.children[lineNum].children[i].classList.remove('keyboard__item_tap-d');
+        } else {
+          keyBoard.children[lineNum].children[i].classList.remove('keyboard__item_tap-l');
+        }
+      }
+    }
+  }
+  getIter(0);
+  getIter(1);
+  getIter(2);
+  getIter(3);
+  getIter(4);
+})
 
 window.addEventListener("keydown", conaction, false)

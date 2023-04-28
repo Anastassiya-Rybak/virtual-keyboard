@@ -68,7 +68,6 @@ textarea:focus, input:focus {
   background-color: beige;
   color: #843c0b;
   font-size: 1.1rem;
-  /* text-shadow: 1px 1px #555454; */
   border: none;
   border-radius: 10%;
   box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.173),
@@ -101,6 +100,12 @@ textarea:focus, input:focus {
 
 .keyboard__item_shift {
   min-width: 95px;
+}
+
+.keyboard__item_uppercase {
+  background-color: rgba(0, 139, 139, 0.121);
+  color: #843c0b;
+
 }
 
 .keyboard__item_dark:active {
