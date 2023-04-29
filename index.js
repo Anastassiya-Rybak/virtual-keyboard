@@ -99,19 +99,19 @@ function createKey (key, selector, container) {
   } else {
     switch (key) {
       case "ArrowUp":
-        keyElement.classList.add('up');
+        keyElement.classList.add(key.toLowerCase());
         keyElement.innerHTML = '<img src="./icons/arrow.png" alt="" style="transform: rotate(-0.25turn)">';
         break;
       case "ArrowLeft":
-        keyElement.classList.add('left');
+        keyElement.classList.add(key.toLowerCase());
         keyElement.innerHTML = '<img src="./icons/arrow.png" alt="" style="transform: rotate(180deg)">';
         break;
       case "ArrowDown":
-        keyElement.classList.add('down');
+        keyElement.classList.add(key.toLowerCase());
         keyElement.innerHTML = '<img src="./icons/arrow.png" alt="" style="transform: rotate(90deg)">';
         break;
       case "ArrowRight":
-        keyElement.classList.add('right');
+        keyElement.classList.add(key.toLowerCase());
         keyElement.innerHTML = '<img src="./icons/arrow.png" alt="">';
         break;
       case "Control":
@@ -157,7 +157,57 @@ textAriaContent.focus();
 const writeSimbol = (event) => {
   event.preventDefault();
 
-  if (!event.target.closest('button') || event.target.innerText == 'Shift' || event.target.innerText == 'Ctrl' || event.target.innerText == 'Win' || event.target.innerText == 'Alt'){return;}
+  if (!event.target.closest('button') || event.target.innerText == 'Ctrl' || event.target.innerText == 'Win' || event.target.innerText == 'Alt'){return;}
+
+  if (event.target.innerText == 'Shift'){
+    keyBoard.classList.toggle('keyboard_uppercase');
+    const getIterate = (lineNum, size) => {
+      if (size == 'up'){
+        for (let i = 0; i < keyBoard.children[lineNum].children.length; i++) {
+          if (keyBoard.children[lineNum].children[i].innerText.length == 1){
+            keyBoard.children[lineNum].children[i].innerText = keyBoard.children[lineNum].children[i].innerText.toUpperCase();
+          }
+        }
+      } else {
+        for (let i = 0; i < keyBoard.children[lineNum].children.length; i++) {
+          if (keyBoard.children[lineNum].children[i].innerText.length == 1){
+            keyBoard.children[lineNum].children[i].innerText = keyBoard.children[lineNum].children[i].innerText.toLowerCase();
+          }
+        }
+      }
+    }
+    if (keyBoard.classList.contains('keyboard_uppercase')){
+      getIterate(0, 'up');
+      getIterate(1, 'up');
+      getIterate(2, 'up');
+      getIterate(3, 'up');
+      getIterate(4, 'up');
+      event.target.addEventListener('mouseup', (e)=>{
+        keyBoard.classList.remove('keyboard_uppercase');
+        getIterate(0, 'down');
+        getIterate(1, 'down');
+        getIterate(2, 'down');
+        getIterate(3, 'down');
+        getIterate(4, 'down');
+      })
+    }else{
+      getIterate(0, 'down');
+      getIterate(1, 'down');
+      getIterate(2, 'down');
+      getIterate(3, 'down');
+      getIterate(4, 'down');
+      event.target.addEventListener('mouseup', (e)=>{
+        keyBoard.classList.add('keyboard_uppercase');
+        getIterate(0, 'up');
+        getIterate(1, 'up');
+        getIterate(2, 'up');
+        getIterate(3, 'up');
+        getIterate(4, 'up');  
+      })
+    }
+
+    return
+  }
 
   if (event.target.innerText == 'CapsLock'){ 
     keyBoard.classList.toggle('keyboard_uppercase');
@@ -226,13 +276,13 @@ const writeSimbol = (event) => {
     textAriaContent.value = valueBeforeCursor + "  " + valueAfterCursor;
 
     textAriaContent.setSelectionRange(cursorPosition + 2, cursorPosition + 2);
-  } else if (event.target.classList.contains('up') || event.target.closest('.up')) {
+  } else if (event.target.classList.contains('arrowup') || event.target.closest('.arrowup')) {
     textAriaContent.value += "▲";
-  } else if (event.target.classList.contains('right') || event.target.closest('.right')) {
+  } else if (event.target.classList.contains('arrowright') || event.target.closest('.arrowright')) {
     textAriaContent.value += "►";
-  } else if (event.target.classList.contains('down') || event.target.closest('.down')) {
+  } else if (event.target.classList.contains('arrowdown') || event.target.closest('.arrowdown')) {
     textAriaContent.value += "▼";
-  } else if (event.target.classList.contains('left') || event.target.closest('.left')) {
+  } else if (event.target.classList.contains('arrowleft') || event.target.closest('.arrowleft')) {
     textAriaContent.value += "◄";
   } else if (event.target.classList.contains("keyboard__item_space")) {
     let cursorPosition = textAriaContent.selectionStart;
@@ -252,8 +302,6 @@ const writeSimbol = (event) => {
     textAriaContent.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
   }
 };
-
-
 
 textAriaContent.addEventListener('mousedown', function(event) { //разрешаю фокусировку только в области текстового поля, чтобы фокус не уходил на кнопки, а оставался на поле.
   if (!event.target.closest('.textaria')) {
@@ -320,6 +368,10 @@ const conaction = (e) => {
         } else {
           keyBoard.children[lineNum].children[i].classList.add('keyboard__item_tap-l');
         }
+      } else {
+        if (keyBoard.children[lineNum].children[i].classList.contains(e.code.toLowerCase())) {
+          keyBoard.children[lineNum].children[i].classList.add('keyboard__item_tap-d');
+        }
       }
     }
   }
@@ -347,6 +399,10 @@ window.addEventListener('keyup', (event) => {
         } else {
           keyBoard.children[lineNum].children[i].classList.remove('keyboard__item_tap-l');
         }
+      } else {
+        if (keyBoard.children[lineNum].children[i].classList.contains(event.code.toLowerCase())) {
+          keyBoard.children[lineNum].children[i].classList.remove('keyboard__item_tap-d');
+        }
       }
     }
   }
@@ -355,6 +411,33 @@ window.addEventListener('keyup', (event) => {
   getIter(2);
   getIter(3);
   getIter(4);
+
+  if (event.target.innerText == 'Shift'){
+    keyBoard.classList.toggle('keyboard_uppercase');
+    // const getIter = (lineNum, size) => {
+    //   if (size == 'up'){
+    //     for (let i = 0; i < keyBoard.children[lineNum].children.length; i++) {
+    //       if (keyBoard.children[lineNum].children[i].innerText.length == 1){
+    //         keyBoard.children[lineNum].children[i].innerText = keyBoard.children[lineNum].children[i].innerText.toUpperCase();
+    //       }
+    //     }
+    //   } else {
+    //     keyBoard.children[2].children[0].classList.remove('keyboard__item_uppercase')
+    //     for (let i = 0; i < keyBoard.children[lineNum].children.length; i++) {
+    //       if (keyBoard.children[lineNum].children[i].innerText.length == 1){
+    //         keyBoard.children[lineNum].children[i].innerText = keyBoard.children[lineNum].children[i].innerText.toLowerCase();
+    //       }
+    //     }
+    //   }
+    // }
+    // if (keyBoard.classList.contains('keyboard_uppercase')){
+    //   getIter(0, 'up');
+    //   getIter(1, 'up');
+    //   getIter(2, 'up');
+    //   getIter(3, 'up');
+    //   getIter(4, 'up');
+    // }
+  }
 })
 
 window.addEventListener("keydown", conaction, false)
