@@ -319,6 +319,7 @@ window.addEventListener("keydown", (event) => {   //сбрасываю дейс�
 keyBoard.addEventListener("mousedown", writeSimbol, false);
 
 const conaction = (e) => {
+  console.log(e.key);
   const getIter = (lineNum) => {
     for (let i = 0; i < keyBoard.children[lineNum].children.length; i++) {
       if ("Key" + keyBoard.children[lineNum].children[i].textContent.toUpperCase() == e.code ||
@@ -366,6 +367,52 @@ const conaction = (e) => {
         if(e.key == "`"){
           keyBoard.children[lineNum].children[i].classList.add('keyboard__item_tap-d');
         } else {
+          if (e.key == 'Shift'){
+            const getIterate = (lineNum, size) => {
+              if (size == 'up'){
+                for (let i = 0; i < keyBoard.children[lineNum].children.length; i++) {
+                  if (keyBoard.children[lineNum].children[i].innerText.length == 1){
+                    keyBoard.children[lineNum].children[i].innerText = keyBoard.children[lineNum].children[i].innerText.toUpperCase();
+                  }
+                }
+              } else {
+                for (let i = 0; i < keyBoard.children[lineNum].children.length; i++) {
+                  if (keyBoard.children[lineNum].children[i].innerText.length == 1){
+                    keyBoard.children[lineNum].children[i].innerText = keyBoard.children[lineNum].children[i].innerText.toLowerCase();
+                  }
+                }
+              }
+            }
+            if (keyBoard.classList.contains('keyboard_uppercase')){
+              getIterate(0, 'down');
+              getIterate(1, 'down');
+              getIterate(2, 'down');
+              getIterate(3, 'down');
+              getIterate(4, 'down');
+              event.target.addEventListener('keyup', (e)=>{
+                keyBoard.classList.add('keyboard_uppercase');
+                getIterate(0, 'up');
+                getIterate(1, 'up');
+                getIterate(2, 'up');
+                getIterate(3, 'up');
+                getIterate(4, 'up');
+              })
+            }else{
+              getIterate(0, 'up');
+              getIterate(1, 'up');
+              getIterate(2, 'up');
+              getIterate(3, 'up');
+              getIterate(4, 'up');
+              event.target.addEventListener('keyup', (e)=>{
+                keyBoard.classList.remove('keyboard_uppercase');
+                getIterate(0, 'down');
+                getIterate(1, 'down');
+                getIterate(2, 'down');
+                getIterate(3, 'down');
+                getIterate(4, 'down');  
+              })
+            }
+          }
           keyBoard.children[lineNum].children[i].classList.add('keyboard__item_tap-l');
         }
       } else {
