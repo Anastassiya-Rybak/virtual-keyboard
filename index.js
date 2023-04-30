@@ -401,7 +401,7 @@ const writeSimbol = (event) => {
       getIterate(2, 'up');
       getIterate(3, 'up');
       getIterate(4, 'up');
-      event.target.addEventListener('mouseup', (e)=>{
+      event.target.addEventListener('mouseup', ()=>{
         keyBoard.classList.remove('keyboard_uppercase');
         getIterate(0, 'down');
         getIterate(1, 'down');
@@ -415,7 +415,7 @@ const writeSimbol = (event) => {
       getIterate(2, 'down');
       getIterate(3, 'down');
       getIterate(4, 'down');
-      event.target.addEventListener('mouseup', (e)=>{
+      event.target.addEventListener('mouseup', ()=>{
         keyBoard.classList.add('keyboard_uppercase');
         getIterate(0, 'up');
         getIterate(1, 'up');
