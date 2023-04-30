@@ -798,6 +798,8 @@ const conaction = (e) => {
           if(e.key == '`'){return;}
           keyBoard.children[lineNum].children[i].classList.add('keyboard__item_tap-l');
           if (e.key == '.' || e.key == '[' || e.key == ']' || e.key == ',' || e.key == '/' || e.key == ';' || e.key == `'`){return;}
+          if (translate == 'ru'){return;}
+
           let cursorPosition = textAriaContent.selectionStart;
           let valueBeforeCursor = textAriaContent.value.substring(0, cursorPosition);
           let valueAfterCursor = textAriaContent.value.substring(cursorPosition);
