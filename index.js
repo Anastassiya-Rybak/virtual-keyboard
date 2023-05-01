@@ -270,7 +270,8 @@ const codes = [
   },
 ];
 
-let translate = 'en';
+let translate = localStorage.getItem('translate');
+
 const pressedKey = [];
 
 const header = document.createElement('header');
@@ -285,7 +286,7 @@ const root = document.createElement('main');
 root.id = 'root-container';
 document.querySelector('body').append(root);
 
-const textAria = document.createElement('div');
+const textAria = document.createElement('section');
 textAria.className = 'textaria';
 root.append(textAria);
 
@@ -295,7 +296,7 @@ textAriaContent.setAttribute('cols', '65');
 textAriaContent.setAttribute('placeholder', 'Ну что ж, надеюсь все пройдёт без багов. . .');
 textAria.append(textAriaContent);
 
-const keyBoard = document.createElement('div');
+const keyBoard = document.createElement('section');
 keyBoard.className = 'keyboard';
 root.append(keyBoard);
 
@@ -304,6 +305,17 @@ keyBoardLine.className = 'keyboard__line';
 keyBoard.append(keyBoardLine);
 keyBoard.append(keyBoardLine.cloneNode(true), keyBoardLine.cloneNode(true));
 keyBoard.append(keyBoardLine.cloneNode(true), keyBoardLine.cloneNode(true));
+
+const note = document.createElement('section');
+note.className = 'notes';
+root.append(note);
+
+const howTranslate = document.createElement('p');
+howTranslate.innerHTML = 'To change the language use this shortcut on phisical keyboard: \n <span>LeftShift + LeftAlt</span>';
+
+const workOS = document.createElement('p');
+workOS.innerHTML = 'This app was developed on Windiws OS';
+note.append(howTranslate, workOS);
 
 const createKey = (key, selector, container) => {
   const keyElement = document.createElement('button');
@@ -568,19 +580,19 @@ const conaction = (e) => {
   const toCapsLock = () => {
     e.preventDefault();
     keyBoard.classList.toggle('keyboard_uppercase');
-    const getIter = (line, size) => {
+    const getIter = (cLine, size) => {
       if (size === 'up') {
         kbCol[2].children[0].classList.add('keyboard__item_uppercase');
-        for (let i = 0; i < kbCol[line].children.length; i += 1) {
-          if (kbCol[line].children[i].innerText.length === 1) {
-            kbCol[line].children[i].innerText = kbCol[line].children[i].innerText.toUpperCase();
+        for (let i = 0; i < kbCol[cLine].children.length; i += 1) {
+          if (kbCol[cLine].children[i].innerText.length === 1) {
+            kbCol[cLine].children[i].innerText = kbCol[cLine].children[i].innerText.toUpperCase();
           }
         }
       } else {
         kbCol[2].children[0].classList.remove('keyboard__item_uppercase');
-        for (let i = 0; i < kbCol[line].children.length; i += 1) {
-          if (kbCol[line].children[i].innerText.length === 1) {
-            kbCol[line].children[i].innerText = kbCol[line].children[i].innerText.toLowerCase();
+        for (let i = 0; i < kbCol[cLine].children.length; i += 1) {
+          if (kbCol[cLine].children[i].innerText.length === 1) {
+            kbCol[cLine].children[i].innerText = kbCol[cLine].children[i].innerText.toLowerCase();
           }
         }
       }
@@ -599,7 +611,6 @@ const conaction = (e) => {
       getIter(4, 'down');
     }
   };
-  console.log(code);
   switch (code) { // Отрисовка символов и реализация функциональности по нажатию на клавиши.
     case 'Backspace':
       addDTap(kbCol[0].children[13]);
@@ -801,7 +812,6 @@ const conaction = (e) => {
   if (code.includes('Digit')) {
     e.preventDefault();
     symbol = code.slice(-1);
-    let symbolShift = codes.find((obj) => obj.enkey === symbol).shiftkey;
 
     Array.from(kbCol[0].children).forEach((elem) => {
       if (elem.textContent === symbol) {
@@ -809,6 +819,30 @@ const conaction = (e) => {
         addContent(elem.textContent, 1);
       }
     });
+  }
+
+  if (code.slice(0, 5) === 'Arrow') {
+    e.preventDefault();
+    switch (code) {
+      case 'ArrowUp':
+        addDTap(kbCol[3].children[11]);
+        addContent('▲', 1);
+        break;
+      case 'ArrowRight':
+        addDTap(kbCol[4].children[8]);
+        addContent('►', 1);
+        break;
+      case 'ArrowDown':
+        addDTap(kbCol[4].children[7]);
+        addContent('▼', 1);
+        break;
+      case 'ArrowLeft':
+        addDTap(kbCol[4].children[6]);
+        addContent('◄', 1);
+        break;
+      default:
+        break;
+    }
   }
 
   if (translate === 'ru' && code.includes('Key')) { // Вывод русских букв с нажатия клавиш.
@@ -839,7 +873,10 @@ const disconaction = (e) => {
   let line;
   let symbol;
   const { code } = e;
-  // const { key } = e;
+
+  if (pressedKey.indexOf(code) !== -1) {
+    pressedKey.splice(pressedKey.indexOf(code), 1);
+  }
 
   if (reg1.test(code.slice(-1))) { line = 1; } else if (reg2.test(code.slice(-1))) {
     line = 2;
@@ -924,10 +961,27 @@ const disconaction = (e) => {
       default:
         break;
     }
+    if (code.slice(0, 5) === 'Arrow') {
+      switch (code) {
+        case 'ArrowUp':
+          delDTap(kbCol[3].children[11]);
+          break;
+        case 'ArrowRight':
+          delDTap(kbCol[4].children[8]);
+          break;
+        case 'ArrowDown':
+          delDTap(kbCol[4].children[7]);
+          break;
+        case 'ArrowLeft':
+          delDTap(kbCol[4].children[6]);
+          break;
+        default:
+          break;
+      }
+    }
   }
   if (code.includes('Digit')) {
     symbol = code.slice(-1);
-    let symbolShift = codes.find((obj) => obj.enkey === symbol).shiftkey;
 
     Array.from(kbCol[0].children).forEach((elem) => {
       if (elem.textContent === symbol) {
@@ -936,7 +990,7 @@ const disconaction = (e) => {
     });
   }
 
-  if (translate === 'ru' && code.includes('Key')) { // Вывод русских букв с нажатия клавиш.
+  if (translate === 'ru' && code.includes('Key')) {
     symbol = code.slice(-1).toLowerCase();
     symbol = codes.find((obj) => obj.enkey.toLowerCase() === symbol).rukey;
 
@@ -947,7 +1001,7 @@ const disconaction = (e) => {
     });
   }
 
-  if (translate === 'en' && code.includes('Key')) { // Вывод английских букв с нажатия клавиш.
+  if (translate === 'en' && code.includes('Key')) {
     Array.from(kbCol[line].children).forEach((elem) => {
       if (`Key${elem.textContent.toUpperCase()}` === code) {
         delLTap(elem);
@@ -967,7 +1021,13 @@ const toTranslate = () => {
     }
     if (pressedKey.includes('ShiftLeft') && pressedKey.includes('AltLeft')) {
       const rememberCaps = kbCol[2].children[0].classList.contains('keyboard__item_uppercase');
-      if (translate === 'en') { translate = 'ru'; } else { translate = 'en'; }
+      if (translate === 'en') {
+        translate = 'ru';
+        localStorage.setItem('translate', 'ru');
+      } else {
+        translate = 'en';
+        localStorage.setItem('translate', 'en');
+      }
       for (let i = 0; i < kbCol.length; i += 1) {
         while (kbCol[i].firstChild) {
           kbCol[i].removeChild(kbCol[i].firstChild);
@@ -979,11 +1039,6 @@ const toTranslate = () => {
         addKeyboard(codes, 'rukey');
       }
       if (rememberCaps) { kbCol[2].children[0].classList.add('keyboard__item_uppercase'); } else { kbCol[2].children[0].classList.remove('keyboard__item_uppercase'); }
-    }
-  });
-  window.addEventListener('keyup', (e) => {
-    if (pressedKey.indexOf(e.code) !== -1) {
-      pressedKey.splice(pressedKey.indexOf(e.code), 1);
     }
   });
 };
