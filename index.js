@@ -518,6 +518,10 @@ const printSimbol = (event) => {
 
 keyBoard.addEventListener('mousedown', printSimbol, false);
 
+const reg1 = /[QWERTYUIOPqwertyuiop]/;
+const reg2 = /[ASDFGHJKLasdfghjkl]/;
+const reg3 = /[ZXCVBNMzxcvbnm]/;
+
 const conaction = (e) => {
   let line;
   let symbol;
