@@ -1,0 +1,145 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: rgba(0, 139, 139, 0.121) ;
+}
+
+.header__title {
+  text-align: center;
+  margin: 2vh auto;
+  font-size: 38px;
+}
+
+#root-container,
+.header {
+  width: 85%;
+  margin: 0 auto;
+}
+
+.textaria {
+  max-width: 900px;
+  min-width: 800px;
+  height: 30vh;
+  background-color: #ffffffe2;
+  border: 1px solid #843c0b;
+  border-radius: 10px;
+  margin: 3vh auto 0;
+  padding: 10px 15px;
+  overflow-wrap: break-word;
+  overflow-y: scroll;
+}
+
+.textaria::-webkit-scrollbar { 
+  width: 0; 
+}
+
+.textaria textarea {
+  color: rgba(0, 0, 0, 0.796);
+  border: none;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-size: 24px;
+  letter-spacing: 0.2em;
+  word-spacing: 0.3em;
+  resize: none;
+}
+
+textarea:focus, input:focus {
+  outline: none;
+}
+
+.keyboard {
+  width: 100%;
+  max-width: 900px;
+  min-width: 800px;
+  margin: 2vh auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.keyboard__line {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.keyboard__item_light {
+  height: 45px;
+  width: 45px;
+  background-color: beige;
+  color: #843c0b;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 10%;
+  box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.173),
+             0px 0px 14px 0px rgba(161, 143, 111, 0.347) inset;
+  cursor: pointer;
+  transition: 0.5s;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.keyboard__item_dark {
+  height: 45px;
+  min-width: 45px;
+  background-color: rgb(113, 67, 11);
+  color: #ffff;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 10%;
+  padding: 10px;
+  box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.312), 0px 0px 14px 0px rgb(198, 127, 74) inset;
+  cursor: pointer;
+  transition: 0.5s;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.keyboard__item_space {
+  background-color: rgba(205, 163, 111, 0.833);
+  width: 265px;
+  border-radius: 4px;
+}
+
+.keyboard__item_shift {
+  min-width: 95px;
+}
+
+.keyboard__item_uppercase {
+  background-color: rgba(0, 139, 139, 0.121);
+  color: #843c0b;
+
+}
+
+.keyboard__item_dark:active {
+  box-shadow: 0px 0px 14px 0px rgb(198, 127, 74) inset;
+}
+
+.keyboard__item_light:active {
+  box-shadow: 0px 0px 14px 0px rgba(161, 143, 111, 0.347) inset;
+}
+
+.keyboard__item_tap-l {
+  box-shadow: 0px 0px 14px 0px rgba(161, 143, 111, 0.347) inset;
+}
+
+.keyboard__item_tap-d {
+  box-shadow: 0px 0px 14px 0px rgb(198, 127, 74) inset;
+}
+
+button img {
+  width: 15px;
+  filter: invert(1);
+}
+
+.notes p {
+  text-align: center;
+  margin-top: 2vh;
+}
+
+.notes p span {
+  font-weight: 800;
+}
