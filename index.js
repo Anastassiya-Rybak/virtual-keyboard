@@ -519,18 +519,26 @@ const printSimbol = (event) => {
 keyBoard.addEventListener('mousedown', printSimbol, false);
 
 const conaction = (e) => {
-  if (e.code === 'Backspace') {
+  let line;
+  let symbol;
+  const { code } = e;
+  const { key } = e;
+
+  if (reg1.test(code.slice(-1))) { line = 1; } else if (reg2.test(code.slice(-1))) {
+    line = 2;
+  } else if (reg3.test(code.slice(-1))) {
+    line = 3;
+  }
+
+  const toBackspace = () => {
     e.preventDefault();
     const cursorPosition = textAriaContent.selectionStart;
     const valueBeforeCursor = textAriaContent.value.substring(0, cursorPosition - 1);
     const valueAfterCursor = textAriaContent.value.substring(cursorPosition);
-
     textAriaContent.value = valueBeforeCursor + valueAfterCursor;
-
     textAriaContent.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
-  }
-
-  if (e.code === 'Delete') {
+  };
+  const toDelete = () => {
     e.preventDefault();
     const cursorPosition = textAriaContent.selectionStart;
     const valueBeforeCursor = textAriaContent.value.substring(0, cursorPosition);
@@ -539,15 +547,117 @@ const conaction = (e) => {
     textAriaContent.value = valueBeforeCursor + valueAfterCursor;
 
     textAriaContent.setSelectionRange(cursorPosition, cursorPosition);
-    addDTap(kbCol[1].children[14]);
-  }
-
-  if (e.code === 'Tab') {
+  };
+  const toCapsLock = () => {
     e.preventDefault();
-    addContent('  ', 2);
+    keyBoard.classList.toggle('keyboard_uppercase');
+    const getIter = (line, size) => {
+      if (size === 'up') {
+        kbCol[2].children[0].classList.add('keyboard__item_uppercase');
+        for (let i = 0; i < kbCol[line].children.length; i += 1) {
+          if (kbCol[line].children[i].innerText.length === 1) {
+            kbCol[line].children[i].innerText = kbCol[line].children[i].innerText.toUpperCase();
+          }
+        }
+      } else {
+        kbCol[2].children[0].classList.remove('keyboard__item_uppercase');
+        for (let i = 0; i < kbCol[line].children.length; i += 1) {
+          if (kbCol[line].children[i].innerText.length === 1) {
+            kbCol[line].children[i].innerText = kbCol[line].children[i].innerText.toLowerCase();
+          }
+        }
+      }
+    };
+    if (keyBoard.classList.contains('keyboard_uppercase')) {
+      getIter(0, 'up');
+      getIter(1, 'up');
+      getIter(2, 'up');
+      getIter(3, 'up');
+      getIter(4, 'up');
+    } else {
+      getIter(0, 'down');
+      getIter(1, 'down');
+      getIter(2, 'down');
+      getIter(3, 'down');
+      getIter(4, 'down');
+    }
+  };
+
+  switch (code) {
+    case 'Backspace':
+      toBackspace();
+      break;
+    case 'Delete':
+      toDelete();
+      break;
+    case 'Tab':
+      e.preventDefault();
+      addContent('  ', 2);
+      break;
+    case 'CapsLock':
+      toCapsLock();
+      break;
+    case 'Space':
+      e.preventDefault();
+      addContent(' ', 1);
+      break;
+    case 'Enter':
+      e.preventDefault();
+      addContent('\n', 1);
+      break;
+    case 'MetaLeft':
+      e.preventDefault();
+      addDTap(kbCol[4].children[1]);
+      break;
+    case 'Backslash':
+      e.preventDefault();
+      addContent('\\', 1);
+      break;
+    case 'BracketLeft':
+      e.preventDefault();
+      if (translate === 'en') { symbol = '['; } else { break; }
+      addContent(symbol, 1);
+      break;
+    case 'BracketRight':
+      e.preventDefault();
+      if (translate === 'en') { symbol = ']'; } else { break; }
+      addContent(symbol, 1);
+      break;
+    case 'Comma':
+      e.preventDefault();
+      if (translate === 'en') { symbol = ','; } else { break; }
+      addContent(symbol, 1);
+      break;
+    case 'Period':
+      e.preventDefault();
+      if (translate === 'en') { symbol = '.'; } else { break; }
+      addContent(symbol, 1);
+      break;
+    case 'Slash':
+      e.preventDefault();
+      if (translate === 'en') { symbol = '/'; } else { break; }
+      addContent(symbol, 1);
+      break;
+    case 'Quote':
+      e.preventDefault();
+      if (translate === 'en') { symbol = '\''; } else { break; }
+      addContent(symbol, 1);
+      break;
+    case 'Semicolon':
+      e.preventDefault();
+      if (translate === 'en') { symbol = ';'; } else { break; }
+      addContent(symbol, 1);
+      break;
+    case 'Backquote':
+      e.preventDefault();
+      if (translate === 'en') { symbol = '`'; } else { break; }
+      addContent(symbol, 1);
+      break;
+    default:
+      break;
   }
 
-  if (e.key === 'Shift') {
+  if (key === 'Shift') {
     e.preventDefault();
     window.addEventListener('keydown', (ev) => {
       if (ev.code === 'AltLeft' && pressedKey.includes('ShiftLeft')) {
@@ -571,6 +681,7 @@ const conaction = (e) => {
         }
       }
     };
+
     if (keyBoard.classList.contains('keyboard_uppercase')) {
       getIterate(0, 'up');
       getIterate(1, 'up');
@@ -606,221 +717,139 @@ const conaction = (e) => {
     }
   }
 
-  if (e.code === 'CapsLock') {
-    e.preventDefault();
-    keyBoard.classList.toggle('keyboard_uppercase');
-    const getIter = (line, size) => {
-      if (size === 'up') {
-        kbCol[2].children[0].classList.add('keyboard__item_uppercase');
-        for (let i = 0; i < kbCol[line].children.length; i += 1) {
-          if (kbCol[line].children[i].innerText.length === 1) {
-            kbCol[line].children[i].innerText = kbCol[line].children[i].innerText.toUpperCase();
-          }
-        }
-      } else {
-        kbCol[2].children[0].classList.remove('keyboard__item_uppercase');
-        for (let i = 0; i < kbCol[line].children.length; i += 1) {
-          if (kbCol[line].children[i].innerText.length === 1) {
-            kbCol[line].children[i].innerText = kbCol[line].children[i].innerText.toLowerCase();
-          }
-        }
-      }
-    };
-    if (keyBoard.classList.contains('keyboard_uppercase')) {
-      getIter(0, 'up');
-      getIter(1, 'up');
-      getIter(2, 'up');
-      getIter(3, 'up');
-      getIter(4, 'up');
-    } else {
-      getIter(0, 'down');
-      getIter(1, 'down');
-      getIter(2, 'down');
-      getIter(3, 'down');
-      getIter(4, 'down');
-    }
-  }
-
-  if (e.code === 'Space') {
-    e.preventDefault();
-    addContent(' ', 1);
-    addLTap(kbCol[4].children[3]);
-    return;
-  }
-
-  if (e.code === 'Enter') {
-    e.preventDefault();
-    addContent('\n', 1);
-  }
-
-  if (e.code === 'MetaLeft') {
-    e.preventDefault();
-    addDTap(kbCol[4].children[1]);
-  }
-
-  if (e.key === 'Control') {
-    if (e.code === 'ControlLeft') { addDTap(kbCol[4].children[0]); } else { addDTap(kbCol[4].children[5]); }
-  }
-
   if (translate === 'ru') {
     e.preventDefault();
     codes.forEach((element) => {
       if (`Key${element.enkey.toUpperCase()}` === e.code) {
-        const check = pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase');
-        addContent(check ? element.rukey.toUpperCase() : element.rukey, 1);
+
       }
     });
-    switch (e.code) {
-      case 'BracketLeft':
-        addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? 'Х' : 'х', 1);
-        break;
-      case 'BracketRight':
-        addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? 'Ъ' : 'ъ', 1);
-        break;
-      case 'Comma':
-        addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? 'Б' : 'б', 1);
-        break;
-      case 'Period':
-        addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? 'Ю' : 'ю', 1);
-        break;
-      case 'Slash':
-        addContent('.', 1);
-        break;
-      case 'Quote':
-        addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? 'Э' : 'э', 1);
-        break;
-      case 'Semicolon':
-        addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? 'Ж' : 'ж', 1);
-        break;
-      case 'Backquote':
-        addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? 'Ё' : 'ё', 1);
-        addDTap(kbCol[0].children[0]);
-        break;
-      case 'Minus':
-        addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? '_' : '-', 1);
-        addLTap(kbCol[0].children[0]);
-        break;
-      case 'Equal':
-        addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? '+' : '=', 1);
-        addLTap(kbCol[0].children[0]);
-        break;
-      default:
-        break;
-    }
+    // switch (e.code) {
+    //   case 'BracketLeft':
+    //     addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? 'Х' : 'х', 1);
+    //     break;
+    //   case 'BracketRight':
+    //     addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? 'Ъ' : 'ъ', 1);
+    //     break;
+    //   case 'Comma':
+    //     addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? 'Б' : 'б', 1);
+    //     break;
+    //   case 'Period':
+    //     addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? 'Ю' : 'ю', 1);
+    //     break;
+    //   case 'Slash':
+    //     addContent('.', 1);
+    //     break;
+    //   case 'Quote':
+    //     addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? 'Э' : 'э', 1);
+    //     break;
+    //   case 'Semicolon':
+    //     addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? 'Ж' : 'ж', 1);
+    //     break;
+    //   case 'Backquote':
+    //     addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? 'Ё' : 'ё', 1);
+    //     addDTap(kbCol[0].children[0]);
+    //     break;
+    //   case 'Minus':
+    //     addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? '_' : '-', 1);
+    //     addLTap(kbCol[0].children[0]);
+    //     break;
+    //   case 'Equal':
+    //     addContent((pressedKey.includes('ShiftLeft') || pressedKey.includes('ShiftRight') || keyBoard.classList.contains('keyboard_uppercase')) ? '+' : '=', 1);
+    //     addLTap(kbCol[0].children[0]);
+    //     break;
+    //   default:
+    //     break;
+    // }
   }
 
-  if (translate === 'en') {
-    switch (e.code) {
-      case 'BracketLeft':
-        addContent('[', 1);
-        break;
-      case 'BracketRight':
-        addContent(']', 1);
-        break;
-      case 'Comma':
-        addContent(',', 1);
-        break;
-      case 'Period':
-        addContent('.', 1);
-        break;
-      case 'Slash':
-        addContent('/', 1);
-        break;
-      case 'Quote':
-        addContent('\'', 1);
-        break;
-      case 'Semicolon':
-        addContent(';', 1);
-        break;
-      case 'Backquote':
-        addContent('`', 1);
-        addDTap(kbCol[0].children[0]);
-        break;
-      default:
-        break;
-    }
+  if (translate === 'en' && code.includes('Key')) {
+    e.preventDefault();
+    Array.from(kbCol[line].children).forEach((elem) => {
+      if (`Key${elem.textContent.toUpperCase()}` === code) { addContent(elem.textContent, 1); }
+    });
   }
 
-  const getIter = (line) => {
-    for (let i = 0; i < kbCol[line].children.length; i += 1) {
-      if (e.key === 'Alt' || e.key === 'AltGraph') {
-        e.preventDefault();
-        window.addEventListener('keydown', (ev) => {
-          if (ev.code === 'ShiftLeft' && pressedKey.includes('AltLeft')) {
-            addDTap(kbCol[4].children[2]);
-            addDTap(kbCol[3].children[0]);
-          }
-        });
-        if (e.code === 'AltLeft') { addDTap(kbCol[4].children[2]); } else { addDTap(kbCol[4].children[4]); }
-        window.addEventListener('keydown', (ev) => {
-          if (ev.code === 'ShiftLeft') {
-            addDTap(kbCol[3].children[0]);
-          }
-        });
-      }
+  // const getIter = (line) => {
+  //   for (let i = 0; i < kbCol[line].children.length; i += 1) {
+  //     if (e.key === 'Alt' || e.key === 'AltGraph') {
+  //       e.preventDefault();
+  //       window.addEventListener('keydown', (ev) => {
+  //         if (ev.code === 'ShiftLeft' && pressedKey.includes('AltLeft')) {
+  //           addDTap(kbCol[4].children[2]);
+  //           addDTap(kbCol[3].children[0]);
+  //         }
+  //       });
+  //       if (e.code === 'AltLeft') { addDTap(kbCol[4].children[2]); } else { addDTap(kbCol[4].children[4]); }
+  //       window.addEventListener('keydown', (ev) => {
+  //         if (ev.code === 'ShiftLeft') {
+  //           addDTap(kbCol[3].children[0]);
+  //         }
+  //       });
+  //     }
 
-      if (translate === 'ru') {
-        codes.forEach((element) => {
-          if (`Key${element.enkey.toUpperCase()}` === e.code) {
-            if (kbCol[line].children[i].innerHTML.toLowerCase() === element.rukey.toLowerCase()) {
-              addLTap(kbCol[line].children[i]);
-            }
-          }
-        });
-      }
-      if (`Key${kbCol[line].children[i].textContent.toUpperCase()}` === e.code
-      || `Digit${kbCol[line].children[i].textContent}` === e.code
-      || kbCol[line].children[i].textContent === e.code) {
-        if (kbCol[line].children[i].innerHTML.length > 1) {
-          addDTap(kbCol[line].children[i]);
-        } else {
-          e.preventDefault();
-          addLTap(kbCol[line].children[i]);
-          addContent(kbCol[line].children[i].innerText, 1);
-        }
-      } else if (kbCol[line].children[i].textContent === e.key) {
-        if (e.key.length > 1) {
-          if (e.key === 'Shift') {
-            if (e.code === 'ShiftLeft') { addDTap(kbCol[3].children[0]); } else { addDTap(kbCol[3].children[12]); }
-            break;
-          }
-          // return;
-        } else {
-          e.preventDefault();
-          if (e.key === '`') { return; }
-          addLTap(kbCol[line].children[i]);
-          if (e.key === '.' || e.key === '[' || e.key === ']' || e.key === ',' || e.key === '/' || e.key === ';' || e.key === '\'') { return; }
-          if (translate === 'ru') { return; }
+  //     if (translate === 'ru') {
+  //       codes.forEach((element) => {
+  //         if (`Key${element.enkey.toUpperCase()}` === e.code) {
+  //           if (kbCol[line].children[i].innerHTML.toLowerCase() === element.rukey.toLowerCase()) {
+  //             addLTap(kbCol[line].children[i]);
+  //           }
+  //         }
+  //       });
+  //     }
+  //     if (`Key${kbCol[line].children[i].textContent.toUpperCase()}` === e.code
+  //     || `Digit${kbCol[line].children[i].textContent}` === e.code
+  //     || kbCol[line].children[i].textContent === e.code) {
+  //       if (kbCol[line].children[i].innerHTML.length > 1) {
+  //         addDTap(kbCol[line].children[i]);
+  //       } else {
+  //         e.preventDefault();
+  //         addLTap(kbCol[line].children[i]);
+  //         addContent(kbCol[line].children[i].innerText, 1);
+  //       }
+  //     } else if (kbCol[line].children[i].textContent === e.key) {
+  //       if (e.key.length > 1) {
+  //         if (e.key === 'Shift') {
+  //           if (e.code === 'ShiftLeft') { addDTap(kbCol[3].children[0]); } else { addDTap(kbCol[3].children[12]); }
+  //           break;
+  //         }
+  //         // return;
+  //       } else {
+  //         e.preventDefault();
+  //         if (e.key === '`') { return; }
+  //         addLTap(kbCol[line].children[i]);
+  //         if (e.key === '.' || e.key === '[' || e.key === ']' || e.key === ',' || e.key === '/' || e.key === ';' || e.key === '\'') { return; }
+  //         if (translate === 'ru') { return; }
 
-          const cursorPosition = textAriaContent.selectionStart;
-          const value1 = textAriaContent.value.substring(0, cursorPosition);
-          const value2 = textAriaContent.value.substring(cursorPosition);
+  //         const cursorPosition = textAriaContent.selectionStart;
+  //         const value1 = textAriaContent.value.substring(0, cursorPosition);
+  //         const value2 = textAriaContent.value.substring(cursorPosition);
 
-          textAriaContent.value = value1 + kbCol[line].children[i].innerText + value2;
+  //         textAriaContent.value = value1 + kbCol[line].children[i].innerText + value2;
 
-          textAriaContent.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
-        }
-      } else if (kbCol[line].children[i].classList.contains(e.code.toLowerCase())) {
-        e.preventDefault();
-        if (kbCol[line].children[i].classList.contains('arrowup')) {
-          e.preventDefault();
-          addContent('▲', 1);
-        } else if (kbCol[line].children[i].classList.contains('arrowright')) {
-          addContent('►', 1);
-        } else if (kbCol[line].children[i].classList.contains('arrowdown')) {
-          addContent('▼', 1);
-        } else if (kbCol[line].children[i].classList.contains('arrowleft')) {
-          addContent('◄', 1);
-        }
-        addDTap(kbCol[line].children[i]);
-      }
-    }
-  };
-  getIter(0);
-  getIter(1);
-  getIter(2);
-  getIter(3);
-  getIter(4);
+  //         textAriaContent.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
+  //       }
+  //     } else if (kbCol[line].children[i].classList.contains(e.code.toLowerCase())) {
+  //       e.preventDefault();
+  //       if (kbCol[line].children[i].classList.contains('arrowup')) {
+  //         e.preventDefault();
+  //         addContent('▲', 1);
+  //       } else if (kbCol[line].children[i].classList.contains('arrowright')) {
+  //         addContent('►', 1);
+  //       } else if (kbCol[line].children[i].classList.contains('arrowdown')) {
+  //         addContent('▼', 1);
+  //       } else if (kbCol[line].children[i].classList.contains('arrowleft')) {
+  //         addContent('◄', 1);
+  //       }
+  //       addDTap(kbCol[line].children[i]);
+  //     }
+  //   }
+  // };
+  // getIter(0);
+  // getIter(1);
+  // getIter(2);
+  // getIter(3);
+  // getIter(4);
 };
 
 window.addEventListener('keyup', (event) => {
