@@ -429,11 +429,85 @@ const printSimbol = (event) => {
           if (kbCol[line].children[i].innerText.length === 1) {
             kbCol[line].children[i].innerText = kbCol[line].children[i].innerText.toUpperCase();
           }
+          switch (kbCol[line].children[i].innerText) {
+            case '-':
+              kbCol[line].children[i].innerText = '_';
+              break;
+            case '=':
+              kbCol[line].children[i].innerText = '+';
+              break;
+            case '\\':
+              kbCol[line].children[i].innerText = '|';
+              break;
+            case ']':
+              kbCol[line].children[i].innerText = '}';
+              break;
+            case '[':
+              kbCol[line].children[i].innerText = '{';
+              break;
+            case '\'':
+              kbCol[line].children[i].innerText = '"';
+              break;
+            case ';':
+              kbCol[line].children[i].innerText = ':';
+              break;
+            case '/':
+              kbCol[line].children[i].innerText = '?';
+              break;
+            case '.':
+              kbCol[line].children[i].innerText = '>';
+              break;
+            case ',':
+              kbCol[line].children[i].innerText = '<';
+              break;
+            case '`':
+              kbCol[line].children[i].innerText = '~';
+              break;
+            default:
+              break;
+          }
         }
       } else {
         for (let i = 0; i < kbCol[line].children.length; i += 1) {
           if (kbCol[line].children[i].innerText.length === 1) {
             kbCol[line].children[i].innerText = kbCol[line].children[i].innerText.toLowerCase();
+          }
+          switch (kbCol[line].children[i].innerText) {
+            case '_':
+              kbCol[line].children[i].innerText = '-';
+              break;
+            case '+':
+              kbCol[line].children[i].innerText = '=';
+              break;
+            case '|':
+              kbCol[line].children[i].innerText = '\\';
+              break;
+            case '}':
+              kbCol[line].children[i].innerText = ']';
+              break;
+            case '{':
+              kbCol[line].children[i].innerText = '[';
+              break;
+            case '"':
+              kbCol[line].children[i].innerText = '\'';
+              break;
+            case ':':
+              kbCol[line].children[i].innerText = ';';
+              break;
+            case '?':
+              kbCol[line].children[i].innerText = '/';
+              break;
+            case '>':
+              kbCol[line].children[i].innerText = '.';
+              break;
+            case '<':
+              kbCol[line].children[i].innerText = ',';
+              break;
+            case '~':
+              kbCol[line].children[i].innerText = '`';
+              break;
+            default:
+              break;
           }
         }
       }
@@ -764,11 +838,85 @@ const conaction = (e) => {
           if (kbCol[kLine].children[i].innerText.length === 1) {
             kbCol[kLine].children[i].innerText = kbCol[kLine].children[i].innerText.toUpperCase();
           }
+          switch (kbCol[kLine].children[i].innerText) {
+            case '-':
+              kbCol[kLine].children[i].innerText = '_';
+              break;
+            case '=':
+              kbCol[kLine].children[i].innerText = '+';
+              break;
+            case '\\':
+              kbCol[kLine].children[i].innerText = '|';
+              break;
+            case ']':
+              kbCol[kLine].children[i].innerText = '}';
+              break;
+            case '[':
+              kbCol[kLine].children[i].innerText = '{';
+              break;
+            case '\'':
+              kbCol[kLine].children[i].innerText = '"';
+              break;
+            case ';':
+              kbCol[kLine].children[i].innerText = ':';
+              break;
+            case '/':
+              kbCol[kLine].children[i].innerText = '?';
+              break;
+            case '.':
+              kbCol[kLine].children[i].innerText = '>';
+              break;
+            case ',':
+              kbCol[kLine].children[i].innerText = '<';
+              break;
+            case '`':
+              kbCol[kLine].children[i].innerText = '~';
+              break;
+            default:
+              break;
+          }
         }
       } else {
         for (let i = 0; i < kbCol[kLine].children.length; i += 1) {
           if (kbCol[kLine].children[i].innerText.length === 1) {
             kbCol[kLine].children[i].innerText = kbCol[kLine].children[i].innerText.toLowerCase();
+          }
+          switch (kbCol[kLine].children[i].innerText) {
+            case '_':
+              kbCol[kLine].children[i].innerText = '-';
+              break;
+            case '+':
+              kbCol[kLine].children[i].innerText = '=';
+              break;
+            case '|':
+              kbCol[kLine].children[i].innerText = '\\';
+              break;
+            case '}':
+              kbCol[kLine].children[i].innerText = ']';
+              break;
+            case '{':
+              kbCol[kLine].children[i].innerText = '[';
+              break;
+            case '"':
+              kbCol[kLine].children[i].innerText = '\'';
+              break;
+            case ':':
+              kbCol[kLine].children[i].innerText = ';';
+              break;
+            case '?':
+              kbCol[kLine].children[i].innerText = '/';
+              break;
+            case '>':
+              kbCol[kLine].children[i].innerText = '.';
+              break;
+            case '<':
+              kbCol[kLine].children[i].innerText = ',';
+              break;
+            case '~':
+              kbCol[kLine].children[i].innerText = '`';
+              break;
+            default:
+              break;
           }
         }
       }
